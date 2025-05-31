@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'node:20-alpine' // Use your local version
-      args '-u root:root'    // Optional: avoid permission issues
-    }
-  }
+  agent any
 
   environment {
     MONGO_URI = credentials('mongo-uri')
@@ -18,22 +13,26 @@ pipeline {
       }
     }
 
-    stage('Install Dependencies') {
+    stage('Build & Test in Node Container') {
       steps {
-        sh 'npm install'
-      }
-    }
-
-    stage('Run Tests') {
-      steps {
-        sh 'npm test || echo "No tests found"'
+        script {
+          docker.image('node:20-alpine').inside {
+            sh 'npm install'
+            sh 'npm test || echo "Tests skipped"'
+            sh 'npm run build || echo "Build skipped"'
+          }
+        }
       }
     }
 
     stage('SonarQube Analysis') {
       steps {
-        withSonarQubeEnv('SonarQube-Server') {
-          sh 'npm run sonar || echo "Sonar analysis skipped"'
+        script {
+          docker.image('node:20-alpine').inside {
+            withSonarQubeEnv('SonarQube-Server') {
+              sh 'npm run sonar || echo "Sonar skipped"'
+            }
+          }
         }
       }
     }
