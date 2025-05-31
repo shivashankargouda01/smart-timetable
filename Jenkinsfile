@@ -2,12 +2,13 @@ pipeline {
   agent any
 
   tools {
-    nodejs 'NodeJS-22.15.0' // Must match Global Tool Config
+    nodejs 'NodeJS-22.15.0' // Make sure this matches your Jenkins global NodeJS installation
   }
 
   environment {
-    SONAR_SCANNER_HOME = tool 'SonarScanner' // Tool name must match Jenkins Global Tool Config
-    PATH = "${SONAR_SCANNER_HOME}/bin:${env.PATH}"
+    // Fixing SonarScanner path for Windows by using backslashes and no extra /bin in the command
+    SONAR_SCANNER_HOME = tool 'SonarScanner' // Jenkins Global Tool Config name
+    PATH = "${SONAR_SCANNER_HOME}\\bin;${env.PATH}" // Windows path separator is ';'
   }
 
   stages {
@@ -22,11 +23,11 @@ pipeline {
       steps {
         echo 'Installing backend dependencies...'
         dir('backend') {
-          sh 'npm install'
+          bat 'npm install'
         }
         echo 'Installing frontend dependencies...'
         dir('frontend') {
-          sh 'npm install'
+          bat 'npm install'
         }
       }
     }
@@ -35,15 +36,15 @@ pipeline {
       steps {
         echo 'Running backend tests...'
         dir('backend') {
-          sh 'npm test -- --coverage --passWithNoTests'
+          bat 'npm test -- --coverage --passWithNoTests'
         }
         echo 'Running frontend tests (non-blocking)...'
         dir('frontend') {
           script {
             try {
-              sh 'npm test || echo "No frontend tests found or tests failed, continuing..."'
-            } catch (e) {
-              echo "Skipping frontend test errors: ${e}"
+              bat 'npm test'
+            } catch (Exception e) {
+              echo "No frontend tests found or tests failed, continuing..."
             }
           }
         }
@@ -54,7 +55,7 @@ pipeline {
       steps {
         echo 'Running SonarQube analysis...'
         withSonarQubeEnv('SonarQube') {
-          sh "${SONAR_SCANNER_HOME}/bin/sonar-scanner"
+          bat "${SONAR_SCANNER_HOME}\\bin\\sonar-scanner.bat"
         }
       }
     }
@@ -64,7 +65,7 @@ pipeline {
         expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
       }
       steps {
-        sh 'docker-compose build'
+        bat 'docker-compose build'
       }
     }
 
@@ -73,8 +74,8 @@ pipeline {
         expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
       }
       steps {
-        sh 'docker-compose down || true'
-        sh 'docker-compose up -d'
+        bat 'docker-compose down || exit 0'
+        bat 'docker-compose up -d'
       }
     }
   }
