@@ -3,6 +3,7 @@
     "axios": "^1.9.0"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "sonar-scanner": "^3.1.0"
   }
 }

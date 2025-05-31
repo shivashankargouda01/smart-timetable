@@ -5,13 +5,15 @@ services:
     build: ./backend
     ports:
       - "5000:5000"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
     volumes:
       - ./backend:/app
-    environment:
-      - NODE_ENV=development
-      - PORT=3001
-      - MONGO_URI=mongodb+srv://new_user_31:us7WCnGiy20HS0wW@cluster0.ymz2b.mongodb.net/smart_timetable?retryWrites=true&w=majority&appName=Cluster0
-      - JWT_SECRET=smart_timetable_jwt_secret_key_2024_secure_token
-      - JWT_EXPIRE=30d
-      - JWT_COOKIE_EXPIRE=30
-      - BCRYPT_ROUNDS=12
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
