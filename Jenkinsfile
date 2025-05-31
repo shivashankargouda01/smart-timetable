@@ -1,21 +1,15 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:20'  // Ensures Node.js and npm are available
-            args '-u root'   // Run as root if file permissions are needed
-        }
-    }
+    agent any
 
     environment {
         MONGO_URI = credentials('mongo-uri')
         JWT_SECRET = credentials('jwt-secret')
-        DOCKER_CREDENTIALS_ID = 'docker-hub-creds'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/shivashankargouda01/smart-timetable.git'
+                checkout scm
             }
         }
 
@@ -25,11 +19,16 @@ pipeline {
             }
         }
 
+        stage('Run Tests') {
+            steps {
+                sh 'npm test' // or skip if not configured
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'npm install -g sonar-scanner'
-                    sh 'sonar-scanner'
+                withSonarQubeEnv('SonarQube-Server') {
+                    sh 'npm run sonar'
                 }
             }
         }
@@ -37,28 +36,19 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("shivutech/smart-timetable")
+                    dockerImage = docker.build("smart_timetable_app:${env.BUILD_NUMBER}")
                 }
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                script {
-                    docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                        dockerImage.push()
-                    }
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                    sh "docker tag smart_timetable_app:${env.BUILD_NUMBER} $USER/smart_timetable_app:${env.BUILD_NUMBER}"
+                    sh "docker push $USER/smart_timetable_app:${env.BUILD_NUMBER}"
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo '✅ Pipeline completed successfully.'
-        }
-        failure {
-            echo '❌ Pipeline failed.'
         }
     }
 }
