@@ -2,13 +2,12 @@ pipeline {
   agent any
 
   tools {
-    nodejs 'NodeJS-22.15.0' // Make sure this matches your Jenkins global NodeJS installation
+    nodejs 'NodeJS-22.15.0' // Must match name in Jenkins Global Tool Configuration
   }
 
   environment {
-    // Fixing SonarScanner path for Windows by using backslashes and no extra /bin in the command
-    SONAR_SCANNER_HOME = tool 'SonarScanner' // Jenkins Global Tool Config name
-    PATH = "${SONAR_SCANNER_HOME}\\bin;${env.PATH}" // Windows path separator is ';'
+    SONAR_SCANNER_HOME = tool 'SonarQube' // Must match Jenkins SonarQube Scanner tool name
+    PATH = "${SONAR_SCANNER_HOME}\\bin;${env.PATH}" // Ensure Windows uses backslash and semicolon
   }
 
   stages {
@@ -54,8 +53,8 @@ pipeline {
     stage('SonarQube Analysis') {
       steps {
         echo 'Running SonarQube analysis...'
-        withSonarQubeEnv('SonarQube') {
-          bat "${SONAR_SCANNER_HOME}\\bin\\sonar-scanner.bat"
+        withSonarQubeEnv('SonarQube') { // Must match Jenkins SonarQube Server name
+          bat 'sonar-scanner.bat'
         }
       }
     }
