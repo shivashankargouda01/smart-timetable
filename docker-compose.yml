@@ -4,7 +4,7 @@ services:
   backend:
     build: ./backend
     ports:
-      - "3001:3001"
+      - "5000:5000"
     volumes:
       - ./backend:/app
     environment:
@@ -15,12 +15,3 @@ services:
       - JWT_EXPIRE=30d
       - JWT_COOKIE_EXPIRE=30
       - BCRYPT_ROUNDS=12
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-    stdin_open: true
-    tty: true
