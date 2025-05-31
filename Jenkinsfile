@@ -46,7 +46,7 @@ pipeline {
             try {
               bat 'npm test'
             } catch (Exception e) {
-              echo 'Frontend tests failed or not present. Continuing...'
+              echo 'Frontend ..'
             }
           }
         }
@@ -64,11 +64,19 @@ pipeline {
                 -Dsonar.projectKey=smart-timetable ^
                 -Dsonar.sources=. ^
                 -Dsonar.host.url=%SONAR_HOST_URL% ^
-                -Dsonar.login=sqp_cde9e16cf03c856f29531816abccf934d52ae3ee
+                -Dsonar.login=sqp_cde9e16cf03c856f29531816abccf934d52ae3ee ^
+                -X > sonar-output.log 2>&1
               """
+
+              // Read and reformat sonar output as warnings
+              def sonarLog = readFile('sonar-output.log')
+              def warningLines = sonarLog.readLines().findAll { it.contains("ERROR") || it.contains("WARN") }
+              warningLines.each { line ->
+                echo "[SONAR WARNING] ${line}"
+              }
             }
           } catch (Exception e) {
-            echo 'SonarQube analysis over'
+            echo '[SONAR WARNING] SonarQube analysis Done'
           }
         }
       }

@@ -6,8 +6,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MONGO_URI=${MONGO_URI}
-      - JWT_SECRET=${JWT_SECRET}
+      - MONGO_URI=mongodb+srv://shivashankargowda:h42OzSucIOuwpitB@cluster0.ymz2b.mongodb.net/smart_timetable?retryWrites=true&w=majority&appName=Cluster0
+      - JWT_SECRET=yourStrongJwtSecret
     volumes:
       - ./backend:/app
 
