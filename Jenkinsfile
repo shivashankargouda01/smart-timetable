@@ -54,7 +54,7 @@ pipeline {
       steps {
         echo 'Running SonarQube analysis...'
         withSonarQubeEnv('SonarQube') { // Must match Jenkins SonarQube Server name
-          bat 'sonar-scanner.bat'
+          bat "sonar-scanner.bat -Dsonar.login=sqp_cde9e16cf03c856f29531816abccf934d52ae3ee"
         }
       }
     }
