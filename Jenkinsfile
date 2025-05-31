@@ -1,8 +1,14 @@
 pipeline {
   agent any
 
+  tools {
+    nodejs 'NodeJS-22.15.0' // Ensure this name matches Global Tool Configuration
+    // Optional: Add this only if using Maven or other tools
+  }
+
   environment {
-    SONARQUBE_SCANNER_HOME = tool 'SonarScanner' 
+    SONARQUBE_SCANNER_HOME = tool 'SonarScanner' // Must match tool name in Global Config
+    PATH = "${tool 'SonarScanner'}/bin:${env.PATH}"
   }
 
   stages {
@@ -14,15 +20,23 @@ pipeline {
 
     stage('Install Dependencies') {
       steps {
-        sh 'cd backend && npm install'
-        sh 'cd frontend && npm install'
+        dir('backend') {
+          sh 'npm install'
+        }
+        dir('frontend') {
+          sh 'npm install'
+        }
       }
     }
 
     stage('Run Tests & Coverage') {
       steps {
-        sh 'cd backend && npm test -- --coverage'
-        sh 'cd frontend && npm test'
+        dir('backend') {
+          sh 'npm test -- --coverage'
+        }
+        dir('frontend') {
+          sh 'npm test'
+        }
       }
     }
 
@@ -42,7 +56,8 @@ pipeline {
 
     stage('Deploy with Docker Compose') {
       steps {
-        sh 'docker-compose down && docker-compose up -d'
+        sh 'docker-compose down || true'
+        sh 'docker-compose up -d'
       }
     }
   }
