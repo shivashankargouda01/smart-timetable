@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:20'  // Ensures Node.js and npm are available
+            args '-u root'   // Run as root if file permissions are needed
+        }
+    }
 
     environment {
         MONGO_URI = credentials('mongo-uri')
@@ -14,10 +19,16 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'npm install'
+                    sh 'npm install -g sonar-scanner'
                     sh 'sonar-scanner'
                 }
             }
@@ -44,10 +55,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully.'
+            echo '✅ Pipeline completed successfully.'
         }
         failure {
-            echo 'Pipeline failed.'
+            echo '❌ Pipeline failed.'
         }
     }
 }
