@@ -28,7 +28,8 @@ pipeline {
     stage('Run Tests and Coverage') {
       steps {
         dir('backend') {
-          bat 'npm run test'
+          // Run Jest with lcov coverage report explicitly
+          bat 'npx jest --coverage --coverageReporters=lcov'
         }
       }
     }
@@ -44,10 +45,8 @@ pipeline {
               -Dsonar.sources=frontend/src,backend ^
               -Dsonar.sourceEncoding=UTF-8 ^
               -Dsonar.inclusions=**/*.js,**/*.jsx,**/*.mjs ^
-              -Dsonar.exclusions=**/node_modules/**,**/public/**,**/build/**,**/dist/**,^
-**/*.test.js,**/*.spec.js,**/__tests__/**,^
-**/*.json,**/*.md,**/*.pdf,**/*.sh,**/docker/**,^
-**/docker-compose*.yml,**/.DS_Store,**/requirements.txt ^
+              -Dsonar.exclusions=**/node_modules/**,**/public/**,**/build/**,**/dist/**,**/*.test.js,**/*.spec.js,**/__tests__/**,**/*.json,**/*.md,**/*.pdf,**/*.sh,**/docker/**,**/docker-compose*.yml,**/.DS_Store,**/requirements.txt ^
+              -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info ^
               -Dsonar.host.url=http://localhost:9000 ^
               -Dsonar.login=%SONAR_TOKEN%
           '''
