@@ -2,11 +2,12 @@ pipeline {
   agent any
 
   tools {
-    nodejs 'NodeJS-22.15.0'
+    nodejs 'NodeJS-22.15.0' // Ensure this matches your Jenkins NodeJS config
+    sonarQubeScanner 'SonarScanner' // Ensure this name matches Jenkins config
   }
 
   environment {
-    SONARQUBE_ENV = 'SonarQube'
+    SONARQUBE_ENV = 'SonarQube' // Must match your SonarQube server config name
   }
 
   stages {
@@ -27,7 +28,7 @@ pipeline {
     stage('Run Tests') {
       steps {
         dir('backend') {
-          sh 'npm test || true' // Optional: don't fail pipeline on test failure
+          sh 'npm test' // Remove || true unless needed
         }
       }
     }
