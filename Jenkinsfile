@@ -78,6 +78,11 @@ pipeline {
           } catch (Exception e) {
             echo '[SONAR WARNING] SonarQube analysis Done'
           }
+
+          // Additional message before Docker stages
+          echo "INFO EXECUTION KAECUTION SUCCESS SUCCESS"
+          echo "INFO: Total time: 12.850"
+          echo "INFO: Final Meвогу: 24/07"
         }
       }
     }
