@@ -7,7 +7,8 @@ services:
       - "5000:5000"
     environment:
       - MONGO_URI=mongodb+srv://shivashankargowda:h42OzSucIOuwpitB@cluster0.ymz2b.mongodb.net/smart_timetable?retryWrites=true&w=majority&appName=Cluster0
-      - JWT_SECRET=yourStrongJwtSecret
+      - JWT_SECRET=smart_timetable_jwt_secret_key_2024_secure_token
+
     volumes:
       - ./backend:/app
 
