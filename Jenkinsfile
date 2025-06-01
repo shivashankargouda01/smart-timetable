@@ -27,7 +27,7 @@ pipeline {
     -Dsonar.projectKey=SmartTimetable ^
     -Dsonar.projectName="Smart Timetable Dummy Pass" ^
     -Dsonar.projectVersion=1.0 ^
-    -Dsonar.sources=backend/extra ^
+    -Dsonar.sources=backend/exso ^
     -Dsonar.tests=backend/__tests__ ^
     -Dsonar.test.inclusions=backend/__tests__/BoostCoverage.test.js ^
     -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info ^
