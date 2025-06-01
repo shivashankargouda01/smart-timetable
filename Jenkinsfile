@@ -3,7 +3,7 @@ pipeline {
 
   tools {
     nodejs 'NodeJS-22.15.0' // Ensure this matches your Jenkins NodeJS config
-    sonarQubeScanner 'SonarScanner' // Ensure this name matches Jenkins config
+    sonarQubeScanner 'SonarQube' // Ensure this name matches Jenkins config
   }
 
   environment {
