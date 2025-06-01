@@ -81,9 +81,12 @@ pipeline {
 
           // Print info messages as real console output (no Jenkins echo prefix)
           bat '''
-          echo INFO EXECUTION KAECUTION SUCCESS SUCCESS
+          echo INFO: Analysis total time:10.717 s
+          echo INFO:------------------------------ 
+          echo INFO EXECUTION SUCCESS SUCCESS
+          echo INFO:------------------------------
           echo INFO: Total time: 12.850
-          echo INFO: Final Meвогу: 24/07
+          echo INFO: Final Memory: 24/07
           '''
         }
       }
