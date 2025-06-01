@@ -28,7 +28,7 @@ pipeline {
     stage('Run Tests and Coverage') {
       steps {
         dir('backend') {
-          // Run Jest with lcov coverage report explicitly
+          // Run tests with coverage generating lcov report for SonarQube
           bat 'npx jest --coverage --coverageReporters=lcov'
         }
       }
@@ -37,7 +37,7 @@ pipeline {
     stage('SonarQube Analysis') {
       steps {
         withSonarQubeEnv("${SONARQUBE_ENV}") {
-          bat '''
+          bat """
             "C:\\Tools\\sonar-scanner\\bin\\sonar-scanner.bat" ^
               -Dsonar.projectKey=SmartTimetable ^
               -Dsonar.projectName="Smart Timetable & Substitution Manager" ^
@@ -49,7 +49,7 @@ pipeline {
               -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info ^
               -Dsonar.host.url=http://localhost:9000 ^
               -Dsonar.login=%SONAR_TOKEN%
-          '''
+          """
         }
       }
     }
