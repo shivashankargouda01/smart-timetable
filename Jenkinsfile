@@ -28,7 +28,7 @@ pipeline {
     stage('Run Tests and Coverage') {
       steps {
         dir('backend') {
-          bat 'npm test -- --coverage'
+          bat 'npm run test'
         }
       }
     }
