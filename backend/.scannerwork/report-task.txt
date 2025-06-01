@@ -2,5 +2,5 @@ projectKey=SmartTimetable
 serverUrl=http://localhost:9000
 serverVersion=25.5.0.107428
 dashboardUrl=http://localhost:9000/dashboard?id=SmartTimetable
-ceTaskId=8d5e0e2f-a099-4ec3-8717-7c7304a6750e
-ceTaskUrl=http://localhost:9000/api/ce/task?id=8d5e0e2f-a099-4ec3-8717-7c7304a6750e
+ceTaskId=848f89f8-f65f-47c8-99b9-e225de98bf80
+ceTaskUrl=http://localhost:9000/api/ce/task?id=848f89f8-f65f-47c8-99b9-e225de98bf80
