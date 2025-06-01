@@ -20,30 +20,22 @@ pipeline {
     stage('Install Dependencies') {
       steps {
         dir('backend') {
-          sh 'npm install'
+          bat 'npm install'
         }
       }
     }
 
-    stage('Run Tests') {
+    stage('Run Tests and Coverage') {
       steps {
         dir('backend') {
-          sh 'npm test'
+          bat 'npm test -- --coverage'
         }
       }
     }
-stage('Test & Coverage') {
-    steps {
-        dir('backend') {
-            sh 'npm test -- --coverage'
-        }
-    }
-}
 
     stage('SonarQube Analysis') {
       steps {
         withSonarQubeEnv("${SONARQUBE_ENV}") {
-          // Run sonar-scanner from workspace root because sources include frontend and backend
           bat '''
             "C:\\Tools\\sonar-scanner\\bin\\sonar-scanner.bat" ^
               -Dsonar.projectKey=SmartTimetable ^
@@ -62,15 +54,17 @@ stage('Test & Coverage') {
         }
       }
     }
-    stage('Deploy') {
-    steps {
-        dir('backend') {
-            sh 'pm2 stop backend || true'
-            sh 'pm2 start index.js --name backend'
-        }
-    }
-}
 
+    stage('Deploy') {
+      steps {
+        dir('backend') {
+          bat '''
+            pm2 stop backend || exit 0
+            pm2 start index.js --name backend
+          '''
+        }
+      }
+    }
 
     stage('Quality Gate') {
       steps {
@@ -78,6 +72,15 @@ stage('Test & Coverage') {
           waitForQualityGate abortPipeline: true
         }
       }
+    }
+  }
+
+  post {
+    success {
+      echo 'CI Success - Quality Gate Passed!'
+    }
+    failure {
+      echo 'CI Failed - Please check SonarQube dashboard and Jenkins logs.'
     }
   }
 }
