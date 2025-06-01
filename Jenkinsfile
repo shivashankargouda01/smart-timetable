@@ -4,18 +4,18 @@ pipeline {
     stages {
         stage('Install') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
         stage('Test') {
             steps {
-                sh 'npm run test'
+                bat 'npm run test'
             }
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('My SonarQube Server') {
-                    sh 'sonar-scanner'
+                withSonarQubeEnv('SonarQube') {
+                    bat 'sonar-scanner'
                 }
             }
         }
