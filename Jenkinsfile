@@ -49,7 +49,7 @@ pipeline {
         withSonarQubeEnv("${SONARQUBE_ENV}") {
           dir('.') {
             bat """
-              sonar-scanner ^
+              C:\\sonar-scanner\\bin\\sonar-scanner.bat ^
                 -Dsonar.projectKey=smart-timetable ^
                 -Dsonar.projectName="Smart Timetable & Substitution Manager" ^
                 -Dsonar.sources=frontend/src,backend ^
