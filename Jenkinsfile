@@ -21,10 +21,18 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                dir('backend') {
-                    withSonarQubeEnv('SonarQube') {
-                        bat 'sonar-scanner'
-                    }
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    bat '''
+  "C:\\Tools\\sonar-scanner\\bin\\sonar-scanner.bat" ^
+    -Dsonar.projectKey=SmartTimetable ^
+    -Dsonar.projectName="Smart Timetable Dummy Pass" ^
+    -Dsonar.projectVersion=1.0 ^
+    -Dsonar.sources=extra ^
+    -Dsonar.tests=__tests__ ^
+    -Dsonar.test.inclusions=__tests__/BoostCoverage.test.js ^
+    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info ^
+    -Dsonar.login=%SONAR_TOKEN%
+'''
                 }
             }
         }
