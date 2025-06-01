@@ -21,9 +21,10 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat 'sonar-scanner'
-                }
+                 dir('backend') {
+            withSonarQubeEnv('SonarQube') {
+                bat 'sonar-scanner'
+            }
             }
         }
     }
