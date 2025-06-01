@@ -1,9 +1,9 @@
 pipeline {
     agent any
-     tools {
+    tools {
         nodejs 'NodeJS-22.15.0'
     }
-     environment {
+    environment {
         SONARQUBE_ENV = 'SonarQube'
         SONAR_TOKEN = credentials('sonar-token')
     }
@@ -21,10 +21,11 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                 dir('backend') {
-            withSonarQubeEnv('SonarQube') {
-                bat 'sonar-scanner'
-            }
+                dir('backend') {
+                    withSonarQubeEnv('SonarQube') {
+                        bat 'sonar-scanner'
+                    }
+                }
             }
         }
     }
