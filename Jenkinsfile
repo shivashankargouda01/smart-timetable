@@ -6,8 +6,8 @@ pipeline {
   }
 
   environment {
-    SONARQUBE_ENV = 'SonarQube'
-    SONAR_TOKEN = credentials('sonar-token')
+    SONARQUBE_ENV = 'SonarQube'            // SonarQube server name in Jenkins config
+    SONAR_TOKEN = credentials('sonar-token') // Secret text credential in Jenkins
   }
 
   stages {
@@ -18,28 +18,17 @@ pipeline {
     }
 
     stage('Install Dependencies') {
-      parallel {
-        stage('Install Backend Deps') {
-          steps {
-            dir('backend') {
-              bat 'npm install'
-            }
-          }
-        }
-        stage('Install Frontend Deps') {
-          steps {
-            dir('frontend') {
-              bat 'npm install'
-            }
-          }
+      steps {
+        dir('backend') {
+          sh 'npm install'
         }
       }
     }
 
-    stage('Run Backend Tests') {
+    stage('Run Tests') {
       steps {
         dir('backend') {
-          bat 'npm test || echo Tests failed, continuing SonarQube analysis...'
+          sh 'npm test'
         }
       }
     }
@@ -47,18 +36,22 @@ pipeline {
     stage('SonarQube Analysis') {
       steps {
         withSonarQubeEnv("${SONARQUBE_ENV}") {
-          dir('.') {
-            bat """
-              C:\\sonar-scanner\\bin\\sonar-scanner.bat ^
-                -Dsonar.projectKey=smart-timetable ^
-                -Dsonar.projectName="Smart Timetable & Substitution Manager" ^
-                -Dsonar.sources=frontend/src,backend ^
-                -Dsonar.inclusions=**/*.js,**/*.jsx ^
-                -Dsonar.exclusions=**/node_modules/**,**/*.test.js,**/*.spec.js,**/public/** ^
-                -Dsonar.sourceEncoding=UTF-8 ^
-                -Dsonar.login=%SONAR_TOKEN%
-            """
-          }
+          // Run sonar-scanner from workspace root because sources include frontend and backend
+          bat '''
+            "C:\\Tools\\sonar-scanner\\bin\\sonar-scanner.bat" ^
+              -Dsonar.projectKey=SmartTimetable ^
+              -Dsonar.projectName="Smart Timetable & Substitution Manager" ^
+              -Dsonar.projectVersion=1.0 ^
+              -Dsonar.sources=frontend/src,backend ^
+              -Dsonar.sourceEncoding=UTF-8 ^
+              -Dsonar.inclusions=**/*.js,**/*.jsx,**/*.mjs ^
+              -Dsonar.exclusions=**/node_modules/**,**/public/**,**/build/**,**/dist/**,^
+**/*.test.js,**/*.spec.js,**/__tests__/**,^
+**/*.json,**/*.md,**/*.pdf,**/*.sh,**/docker/**,^
+**/docker-compose*.yml,**/.DS_Store,**/requirements.txt ^
+              -Dsonar.host.url=http://localhost:9000 ^
+              -Dsonar.login=%SONAR_TOKEN%
+          '''
         }
       }
     }
