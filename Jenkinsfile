@@ -2,12 +2,11 @@ pipeline {
   agent any
 
   tools {
-    nodejs 'NodeJS-22.15.0' // Ensure this matches your Jenkins NodeJS config
-    // sonarQubeScanner is NOT a valid tool type in Declarative Pipeline - REMOVED
+    nodejs 'NodeJS-22.15.0'
   }
 
   environment {
-    SONARQUBE_ENV = 'SonarQube' // SonarQube server name (configured in Jenkins → Configure System)
+    SONARQUBE_ENV = 'SonarQube' // SonarQube server name from Jenkins config
     SONAR_TOKEN = credentials('sonar-token') // Secret text credential in Jenkins
   }
 
@@ -38,12 +37,13 @@ pipeline {
       steps {
         withSonarQubeEnv("${SONARQUBE_ENV}") {
           dir('backend') {
-            sh '''
-              sonar-scanner \
-                -Dsonar.projectKey=smart-timetable \
-                -Dsonar.sources=. \
-                -Dsonar.host.url=http://localhost:9000 \
-                -Dsonar.login=$SONAR_TOKEN
+            // Full path used below (Windows-style path, using ^ for multi-line in cmd)
+            bat '''
+              "C:\\Tools\\sonar-scanner\\bin\\sonar-scanner.bat" ^
+                -Dsonar.projectKey=smart-timetable ^
+                -Dsonar.sources=. ^
+                -Dsonar.host.url=http://localhost:9000 ^
+                -Dsonar.login=%SONAR_TOKEN%
             '''
           }
         }
