@@ -32,6 +32,13 @@ pipeline {
         }
       }
     }
+stage('Test & Coverage') {
+    steps {
+        dir('backend') {
+            sh 'npm test -- --coverage'
+        }
+    }
+}
 
     stage('SonarQube Analysis') {
       steps {
@@ -55,6 +62,15 @@ pipeline {
         }
       }
     }
+    stage('Deploy') {
+    steps {
+        dir('backend') {
+            sh 'pm2 stop backend || true'
+            sh 'pm2 start index.js --name backend'
+        }
+    }
+}
+
 
     stage('Quality Gate') {
       steps {
