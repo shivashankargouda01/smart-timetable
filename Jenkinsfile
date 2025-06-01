@@ -1,5 +1,12 @@
 pipeline {
     agent any
+     tools {
+        nodejs 'NodeJS-22.15.0'
+    }
+     environment {
+        SONARQUBE_ENV = 'SonarQube'
+        SONAR_TOKEN = credentials('sonar-token')
+    }
 
     stages {
         stage('Install') {
