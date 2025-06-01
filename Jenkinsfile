@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git 'https://github.com/yourname/smart-timetable.git'
+        git credentialsId: 'github-jenkins', url: 'https://github.com/shivashankargouda01/smart-timetable.git'
       }
     }
 
@@ -27,15 +27,17 @@ pipeline {
     stage('Run Tests') {
       steps {
         dir('backend') {
-          sh 'npm test || true' // Avoid failing for now
+          sh 'npm test || true' // Optional: don't fail pipeline on test failure
         }
       }
     }
 
     stage('SonarQube Analysis') {
       steps {
-        withSonarQubeEnv('SonarQube') {
-          sh 'sonar-scanner'
+        withSonarQubeEnv("${SONARQUBE_ENV}") {
+          dir('backend') {
+            sh 'sonar-scanner'
+          }
         }
       }
     }
