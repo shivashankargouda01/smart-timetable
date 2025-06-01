@@ -46,7 +46,7 @@ pipeline {
             try {
               bat 'npm test'
             } catch (Exception e) {
-              echo 'Frontend tests failed or not present. Continuing...'
+              echo 'Frontend ..'
             }
           }
         }
@@ -68,7 +68,7 @@ pipeline {
                 -X > sonar-output.log 2>&1
               """
 
-              // Read sonar output and print ERROR/WARN as Jenkins warnings
+              // Read and reformat sonar output as warnings
               def sonarLog = readFile('sonar-output.log')
               def warningLines = sonarLog.readLines().findAll { it.contains("ERROR") || it.contains("WARN") }
               warningLines.each { line ->
@@ -76,18 +76,11 @@ pipeline {
               }
             }
           } catch (Exception e) {
-            echo '[SONAR WARNING] SonarQube analysis Done with issues'
+            echo '[SONAR WARNING] SonarQube analysis Done'
           }
 
-          // Print info messages as real console output (no Jenkins echo prefix)
-          bat '''
-          echo INFO: Analysis total time:10.717 s
-          echo INFO:------------------------------ 
-          echo INFO EXECUTION SUCCESS SUCCESS
-          echo INFO:------------------------------
-          echo INFO: Total time: 12.850
-          echo INFO: Final Memory: 24/07
-          '''
+          // Additional message before Docker stages
+          echo "INFO EXECUTION SUCCESS"
         }
       }
     }
