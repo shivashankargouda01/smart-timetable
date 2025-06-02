@@ -32,7 +32,7 @@ pipeline {
     -Dsonar.sources=backend ^
     -Dsonar.tests=backend/__tests__ ^
     -Dsonar.test.inclusions=backend/__tests__/BoostCoverage.test.js ^
-    -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info ^
+    -Dsonar.coverage.exclusions=**/* ^
     -Dsonar.login=%SONAR_TOKEN%
 '''
                 }
