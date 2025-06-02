@@ -26,17 +26,11 @@ pipeline {
 
                     bat '''
   "C:\\Tools\\sonar-scanner\\bin\\sonar-scanner.bat" ^
-    -Dsonar.projectKey=SmartTimetable ^
-    -Dsonar.projectName="Smart Timetable & Substitution Manager" ^
-    -Dsonar.projectVersion=1.0 ^
-    -Dsonar.sources=backend ^
-    -Dsonar.tests=backend/__tests__ ^
-    -Dsonar.test.inclusions=backend/__tests__/**/*.test.js ^
-    -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info ^
-    -Dsonar.coverage.exclusions=**/node_modules/**,**/__tests__/**,**/*.test.js ^
-    -Dsonar.duplication.exclusions=**/node_modules/**,**/extra/**,**/__tests__/** ^
-    -Dsonar.sourceEncoding=UTF-8 ^
-    -Dsonar.login=%SONAR_TOKEN%
+      -Dsonar.projectKey=SmartTimetable ^
+      -Dsonar.projectName="Smart Timetable & Substitution Manager" ^
+      -Dsonar.projectVersion=1.0 ^
+      -Dsonar.sources=backend ^
+      -Dsonar.login=%SONAR_TOKEN%
 '''
                 }
             }
