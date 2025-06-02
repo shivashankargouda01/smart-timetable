@@ -22,6 +22,8 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    bat 'dir /s backend'
+
                     bat '''
   "C:\\Tools\\sonar-scanner\\bin\\sonar-scanner.bat" ^
     -Dsonar.projectKey=SmartTimetable ^
