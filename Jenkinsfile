@@ -25,7 +25,7 @@ pipeline {
                     
 
                     bat '''
- "C:\Tools\sonar-scanner\bin\sonar-scanner.bat" ^
+  "C:\\Tools\\sonar-scanner\\bin\\sonar-scanner.bat" ^
     -Dsonar.projectKey=SmartTimetable ^
     -Dsonar.projectName="Smart Timetable & Substitution Manager" ^
     -Dsonar.projectVersion=1.0 ^
@@ -37,7 +37,6 @@ pipeline {
     -Dsonar.duplication.exclusions=**/node_modules/**,**/extra/**,**/__tests__/** ^
     -Dsonar.sourceEncoding=UTF-8 ^
     -Dsonar.login=%SONAR_TOKEN%
-
 '''
                 }
             }
