@@ -27,6 +27,7 @@ pipeline {
     -Dsonar.projectKey=SmartTimetable ^
     -Dsonar.projectName="Smart Timetable" ^
     -Dsonar.projectVersion=1.0 ^
+    -Dsonar.sources=backend ^
     -Dsonar.sources=backend/extra ^
     -Dsonar.tests=backend/__tests__ ^
     -Dsonar.test.inclusions=backend/__tests__/BoostCoverage.test.js ^
